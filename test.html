@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Detailed Book Log Form</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f9f9f9;
+    margin: 0;
+    padding: 20px 1cm; /* 1cm margin left & right */
+    box-sizing: border-box;
+  }
+  form {
+    max-width: 700px;
+    margin: auto;
+    background: white;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.1);
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 1em;
+    color: #222;
+  }
+  label {
+    display: block;
+    font-weight: 600;
+    margin-top: 15px;
+    margin-bottom: 5px;
+  }
+  input[type="text"],
+  input[type="number"],
+  input[type="date"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+  textarea {
+    resize: vertical;
+    min-height: 70px;
+  }
+  .checkbox-group,
+  .checkbox-group.icons,
+  .checkbox-group.inline {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .checkbox-group label {
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .checkbox-group.icons label {
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  .icon-physical::before { content: "📚"; }
+  .icon-audio::before { content: "🎧"; }
+  .icon-ebook::before { content: "📱"; }
+
+  /* Star, tear, fire rating styles */
+  .rating-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .stars, .tears, .fires {
+    display: flex;
+    gap: 5px;
+    font-size: 1.6rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .star, .tear, .fire {
+    color: #ccc;
+    transition: color 0.2s;
+  }
+  .star.filled { color: gold; }
+  .tear.filled { color: #00aaff; }
+  .fire.filled { color: orangered; }
+
+  /* Dropdown rating 1-10 */
+  select.rating-1to10 {
+    width: 70px;
+    padding: 5px 10px;
+    font-size: 1rem;
+  }
+
+  /* Upload preview */
+  #bookPicPreview {
+    margin-top: 10px;
+    max-width: 100%;
+    max-height: 180px;
+    border-radius: 8px;
+    object-fit: contain;
+    border: 1px solid #ccc;
+  }
+
+  /* Additional Reads container */
+  .additional-read {
+    border: 1px solid #ddd;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 10px;
+    position: relative;
+  }
+  .remove-additional-read {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: red;
+  }
+
+  /* Button styles */
+  button {
+    margin-top: 20px;
+    background: #007BFF;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 7px;
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #0056b3;
+  }
+</style>
+</head>
+<body>
+
+<form id="bookForm" enctype="multipart/form-data" novalidate>
+  <h2>Add a Book</h2>
+
+  <!-- Picture upload -->
+  <label for="bookPicture">Book Picture</label>
+  <input type="file" id="bookPicture" accept="image/*" />
+  <img id="bookPicPreview" alt="Book Picture Preview" style="display:none" />
+
+  <!-- Title -->
+  <label for="title">Title of the Book</label>
+  <input type="text" id="title" required />
+
+  <!-- Genre -->
+  <label for="genre">Genre</label>
+  <input type="text" id="genre" required />
+
+  <!-- Author -->
+  <label for="author">Author</label>
+  <input type="text" id="author" required />
+
+  <!-- Pages -->
+  <label for="pages">Pages</label>
+  <input type="number" id="pages" min="1" step="1" />
+
+  <!-- Start and End date -->
+  <label>Start Date</label>
+  <input type="date" id="startDate" />
+  <label>End Date</label>
+  <input type="date" id="endDate" />
+
+  <!-- Book format checkboxes with icons -->
+  <label>Book Format</label>
+  <div class="checkbox-group icons">
+    <label><input type="checkbox" id="physical" name="format" value="physical" /> <span class="icon-physical" title="Physical Book"></span></label>
+    <label><input type="checkbox" id="audiobook" name="format" value="audiobook" /> <span class="icon-audio" title="Audiobook"></span></label>
+    <label><input type="checkbox" id="ebook" name="format" value="ebook" /> <span class="icon-ebook" title="E-book"></span></label>
+  </div>
+
+  <!-- Favorite quote -->
+  <label for="favQuote">Favorite Quote</label>
+  <textarea id="favQuote" placeholder="Write your favorite quote from the book"></textarea>
+
+  <!-- Favorite side character -->
+  <label for="favSideChar">Favorite Side Character</label>
+  <input type="text" id="favSideChar" />
+
+  <!-- Favorite scene -->
+  <label for="favScene">Favorite Scene</label>
+  <textarea id="favScene" placeholder="Describe your favorite scene"></textarea>
+
+  <!-- Ratings for Quality of Writing, Plot, Characters, Ending -->
+  <label>Rating for Quality of Writing</label>
+  <select id="qualityWriting" class="rating-1to10" required>
+    <option value="">Select</option>
+    ${Array.from({length:10}, (_,i) => `<option value="${i+1}">${i+1}</option>`).join('')}
+  </select>
+
+  <label>Rating for Plot Development</label>
+  <select id="plotDevelopment" class="rating-1to10" required>
+    <option value="">Select</option>
+    ${Array.from({length:10}, (_,i) => `<option value="${i+1}">${i+1}</option>`).join('')}
+  </select>
+
+  <label>Rating for Characters</label>
+  <select id="characters" class="rating-1to10" required>
+    <option value="">Select</option>
+    ${Array.from({length:10}, (_,i) => `<option value="${i+1}">${i+1}</option>`).join('')}
+  </select>
+
+  <label>Rating for Ending</label>
+  <select id="ending" class="rating-1to10" required>
+    <option value="">Select</option>
+    ${Array.from({length:10}, (_,i) => `<option value="${i+1}">${i+1}</option>`).join('')}
+  </select>
+
+  <!-- Final thoughts -->
+  <label for="finalThoughts">Final Thoughts</label>
+  <textarea id="finalThoughts" placeholder="Your overall impressions, feelings, or review"></textarea>
+
+  <!-- Would I recommend? -->
+  <label>Would I Recommend?</label>
+  <div class="checkbox-group inline">
+    <label><input type="checkbox" id="recommend" /> Yes</label>
+  </div>
+
+  <!-- Star Rating System -->
+  <label>Star Rating (0-5, decimal allowed)</label>
+  <input type="number" id="starRatingInput" min="0" max="5" step="0.1" value="0" />
+  <div class="stars" id="starRating" aria-label="Star rating">
+    <span class="star" data-value="1">★</span>
+    <span class="star" data-value="2">★</span>
+    <span class="star" data-value="3">★</span>
+    <span class="star" data-value="4">★</span>
+    <span class="star" data-value="5">★</span>
+  </div>
+
+  <!-- Tear Rating System -->
+  <label>Tear Rating (0-5)</label>
+  <div class="tears" id="tearRating" aria-label="Tear rating">
+    <span class="tear" data-value="1">😭</span>
+    <span class="tear" data-value="2">😭</span>
+    <span class="tear" data-value="3">😭</span>
+    <span class="tear" data-value="4">😭</span>
+    <span class="tear" data-value="5">😭</span>
+  </div>
+
+  <!-- Spice Rating System -->
+  <label>Spice Rating (0-5)</label>
+  <div class="fires" id="fireRating" aria-label="Spice rating">
+    <span class="fire" data-value="1">🔥</span>
+    <span class="fire" data-value="2">🔥</span>
+    <span class="fire" data-value="3">🔥</span>
+    <span class="fire" data-value="4">🔥</span>
+    <span class="fire" data-value="5">🔥</span>
+  </div>
+
+  <!-- Additional reads -->
+  <label>Additional Reads</label>
+  <div id="additionalReadsContainer"></div>
+  <button type="button" id="addAdditionalReadBtn">+ Add Additional Read</button>
+
+  <button type="submit">Submit Book</button>
+</form>
+
+<script>
+  // Preview uploaded image
+  const bookPictureInput = document.getElementById('bookPicture');
+  const bookPicPreview = document.getElementById('bookPicPreview');
+  bookPictureInput.addEventListener('change', () => {
+    const file = bookPictureInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        bookPicPreview.src = e.target.result;
+        bookPicPreview.style.display = 'block';
+      }
+      reader.readAsDataURL(file);
+    } else {
+      bookPicPreview.style.display = 'none';
+      bookPicPreview.src = '';
+    }
+  });
+
+  // Star rating with decimal input syncing
+  const starRatingInput = document.getElementById('starRatingInput');
+  const starElems = document.querySelectorAll('#starRating .star');
+  
+  function updateStars(rating) {
+    starElems.forEach(star => {
+      const val = Number(star.dataset.value);
+      if (rating >= val) {
+        star.classList.add('filled');
+        star.style.background = '';
+      } else if (rating > val - 1 && rating < val) {
+        star.classList.add('filled');
+        star.style.background = 'linear-gradient(90deg, gold ' + ((rating - (val - 1)) * 100) + '%, #ccc 0%)';
+      } else {
+        star.classList.remove('filled');
+        star.style.background = '';
+      }
+    });
+  }
+  
+  starRatingInput.addEventListener('input', () => {
+    let val = parseFloat(starRatingInput.value);
+    if (isNaN(val) || val < 0) val = 0;
+    if (val > 5) val = 5;
+    starRatingInput.value = val.toFixed(1);
+    updateStars(val);
+  });
+  
+  // Initialize star rating display
+  updateStars(0);
+
+  // Tear rating system
+  const tearElems = document.querySelectorAll('#tearRating .tear');
+  let tearRatingValue = 0;
+  tearElems.forEach(tear => {
+    tear.addEventListener('click', () => {
+      tearRatingValue = Number(tear.dataset.value);
+      updateTears(tearRatingValue);
+    });
+  });
+  function updateTears(val) {
+    tearElems.forEach(tear => {
+      if (Number(tear.dataset.value) <= val) {
+        tear.classList.add('filled');
+      } else {
+        tear.classList.remove('filled');
+      }
+    });
+  }
+  updateTears(0);
+
+  // Fire rating system
+  const fireElems = document.querySelectorAll('#fireRating .fire');
+  let fireRatingValue = 0;
+  fireElems.forEach(fire => {
+    fire.addEventListener('click', () => {
+      fireRatingValue = Number(fire.dataset.value);
+      updateFires(fireRatingValue);
+    });
+  });
+  function updateFires(val) {
+    fireElems.forEach(fire => {
+      if (Number(fire.dataset.value) <= val) {
+        fire.classList.add('filled');
+      } else {
+        fire.classList.remove('filled');
+      }
+    });
+  }
+  updateFires(0);
+
+  // Additional Reads logic
+  const additionalReadsContainer = document.getElementById('additionalReadsContainer');
+  const addAdditionalReadBtn = document.getElementById('addAdditionalReadBtn');
+
+  function createAdditionalReadElement() {
+    const div = document.createElement('div');
+    div.classList.add('additional-read');
+
+    div.innerHTML = `
+      <label>Start Date</label>
+      <input type="date" class="add-read-start" />
+      <label>End Date</label>
+      <input type="date" class="add-read-end" />
+      <span class="remove-additional-read" title="Remove Additional Read">&times;</span>
+    `;
+
+    const removeBtn = div.querySelector('.remove-additional-read');
+    removeBtn.addEventListener('click', () => {
+      div.remove();
+    });
+
+    return div;
+  }
+
+  addAdditionalReadBtn.addEventListener('click', () => {
+    const newRead = createAdditionalReadElement();
+    additionalReadsContainer.appendChild(newRead);
+  });
+
+  // On form submit collect data (example)
+  const form = document.getElementById('bookForm');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    // Collect data here for submission or validation
+
+    const data = {
+      picture: bookPictureInput.files[0] || null,
+      title: document.getElementById('title').value.trim(),
+      genre: document.getElementById('genre').value.trim(),
+      author: document.getElementById('author').value.trim(),
+      pages: Number(document.getElementById('pages').value) || null,
+      startDate: document.getElementById('startDate').value || null,
+      endDate: document.getElementById('endDate').value || null,
+      format: Array.from(document.querySelectorAll('input[name="format"]:checked')).map(cb => cb.value),
+      favQuote: document.getElementById('favQuote').value.trim(),
+      favSideChar: document.getElementById('favSideChar').value.trim(),
+      favScene: document.getElementById('favScene').value.trim(),
+      qualityWriting: document.getElementById('qualityWriting').value,
+      plotDevelopment: document.getElementById('plotDevelopment').value,
+      characters: document.getElementById('characters').value,
+      ending: document.getElementById('ending').value,
+      finalThoughts: document.getElementById('finalThoughts').value.trim(),
+      recommend: document.getElementById('recommend').checked,
+      starRating: parseFloat(starRatingInput.value),
+      tearRating: tearRatingValue,
+      fireRating: fireRatingValue,
+      additionalReads: Array.from(additionalReadsContainer.querySelectorAll('.additional-read')).map(div => ({
+        startDate: div.querySelector('.add-read-start').value || null,
+        endDate: div.querySelector('.add-read-end').value || null
+      }))
+    };
+
+    console.log('Collected Book Data:', data);
+
+    alert('Book data collected! Check console for details.');
+
+    // Reset form or send to backend here
+  });
+</script>
+
+</body>
+</html>
+
+
+// ...existing code...
+function renderBooks() {
+  bookList.innerHTML = '';
+  if (books.length === 0) {
+    bookList.innerHTML = '<p style="text-align:center; color:#666; font-style:italic;">No books logged yet.</p>';
+    return;
+  }
+
+  books.forEach((book, index) => {
+    const btn = document.createElement('button');
+    btn.className = 'bookGridBtn';
+    btn.setAttribute('data-index', index);
+
+    btn.innerHTML = `
+      <div class="bookGridPic">
+        ${book.bookPicture ? `<img src="${book.bookPicture}" alt="Book Picture" />` : `<div class="noPic"></div>`}
+      </div>
+      <div class="bookGridInfo">
+        <strong>${escapeHTML(book.bookName)}</strong><br/>
+        <span>${escapeHTML(book.authorName)}</span><br/>
+        <span>${escapeHTML(book.genre)}</span><br/>
+        <span>${book.startDate} - ${book.endDate}</span>
+      </div>
+    `;
+    btn.addEventListener('click', () => openBookPopup(index));
+    bookList.appendChild(btn);
+  });
+}
+// ...existing code...
