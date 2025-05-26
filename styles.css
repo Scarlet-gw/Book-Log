@@ -1,0 +1,751 @@
+body {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  background: linear-gradient(120deg, #eaf6fb 0%, #e3eafc 100%);
+  color: #22304a;
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 100px;
+}
+
+.main-header {
+  background: #4a6fa5;
+  box-shadow: 0 2px 12px rgba(60,80,120,0.08);
+  border-bottom: 2px solid #b8c6e7;
+  padding: 38px 0 22px 0;
+  margin-bottom: 0;
+  border-radius: 0 0 24px 24px;
+  text-align: center;
+  position: relative;
+}
+.main-header h1 {
+  margin: 0;
+  font-weight: 800;
+  font-size: 2.7rem;
+  color: #fff;
+  letter-spacing: 1px;
+  opacity: 0;
+  animation: fadeInUp 1s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to { opacity: 1; transform: translateY(0);}
+  from { opacity: 0; transform: translateY(20px);}
+}
+
+#darkModeToggle {
+  position: absolute;
+  top: 18px;
+  right: 28px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #fff;
+  transition: color 0.2s;
+  z-index: 10;
+}
+
+#buttonsContainer {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  display: flex;
+  gap: 18px;
+  z-index: 1000;
+}
+
+.floating-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 30px;
+  color: #fff;
+  background: linear-gradient(135deg, #4a6fa5 0%, #7ea1e7 100%);
+  box-shadow: 0 4px 16px rgba(74,111,165,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+#addBtn {
+  background: linear-gradient(135deg, #4a6fa5 0%, #7ea1e7 100%);
+}
+#addBtn:hover, #addBtn:focus {
+  background: linear-gradient(135deg, #7ea1e7 0%, #4a6fa5 100%);
+  transform: scale(1.12);
+  box-shadow: 0 6px 24px rgba(74,111,165,0.22);
+}
+#statsBtn {
+  background: linear-gradient(135deg, #b8c6e7 0%, #4a6fa5 100%);
+}
+#statsBtn:hover, #statsBtn:focus {
+  background: linear-gradient(135deg, #4a6fa5 0%, #b8c6e7 100%);
+  transform: scale(1.08);
+  box-shadow: 0 6px 24px rgba(74,111,165,0.18);
+}
+
+#formPopup, #statsPopup, #bookDetailPopup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: #fafdff;
+  box-shadow: 0 8px 32px rgba(60,80,120,0.13);
+  border-radius: 18px;
+  width: 92%;
+  max-width: 420px;
+  padding: 28px 24px 24px 24px;
+  z-index: 2000;
+  transition: transform 0.3s, opacity 0.3s;
+  opacity: 0;
+  pointer-events: none;
+  max-height: 85vh;
+  overflow-y: auto;
+  border: 1.5px solid #b8c6e7;
+  color: #22304a;
+}
+#formPopup.active, #statsPopup.active, #bookDetailPopup.active {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+#formPopup h2, #statsPopup h2 {
+  margin-top: 0;
+  font-weight: 700;
+  margin-bottom: 6px;
+  text-align: center;
+  color: #2d3142;
+  font-size: 1.5rem;
+  letter-spacing: 0.5px;
+}
+#statsPopup .statsSubheading {
+  margin-top: 2px;
+  margin-bottom: 18px;
+  color: #6c7a89;
+  font-size: 1.08rem;
+  text-align: center;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+}
+#formPopup label {
+  display: block;
+  margin-top: 14px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #3a3a4a;
+}
+#formPopup input, #formPopup textarea, #formPopup select {
+  width: 96%;
+  margin-top: 7px;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1.5px solid #b8c6e7;
+  background: #f6f7fb;
+  color: #2d3142;
+  resize: vertical;
+  font-family: inherit;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+#formPopup input:focus, #formPopup textarea:focus, #formPopup select:focus {
+  border: 1.5px solid #4a6fa5;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(74,111,165,0.10);
+}
+#formPopup textarea {
+  min-height: 60px;
+}
+#formPopup button.submitBtn {
+  margin-top: 24px;
+  width: 100%;
+  background: linear-gradient(90deg, #7ea1e7 0%, #b8c6e7 100%);
+  border: none;
+  color: #22304a;
+  font-size: 1.13rem;
+  padding: 13px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.3s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(120,120,180,0.08);
+  outline: none;
+}
+#formPopup button.submitBtn:hover, #formPopup button.submitBtn:focus {
+  background: linear-gradient(90deg, #b8c6e7 0%, #7ea1e7 100%);
+  color: #22304a;
+  box-shadow: 0 4px 16px rgba(120,120,180,0.13);
+}
+#formPopup button.closeBtn,
+#statsPopup button.closeBtn,
+#bookDetailPopup .closeBtn {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: transparent;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: #7ea1e7;
+  transition: color 0.2s;
+  font-weight: 700;
+  user-select: none;
+  outline: none;
+}
+#formPopup button.closeBtn:hover,
+#statsPopup button.closeBtn:hover,
+#bookDetailPopup .closeBtn:hover,
+#formPopup button.closeBtn:focus,
+#statsPopup button.closeBtn:focus,
+#bookDetailPopup .closeBtn:focus {
+  color: #4a6fa5;
+}
+
+#addMoreReadsBtn {
+  background: linear-gradient(90deg, #b8c6e7 0%, #e3eafc 100%);
+  color: #22304a;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(120,120,180,0.07);
+  transition: background 0.2s, color 0.2s, transform 0.15s, box-shadow 0.2s;
+  letter-spacing: 0.2px;
+  outline: none;
+  display: inline-block;
+}
+#addMoreReadsBtn:hover, #addMoreReadsBtn:focus {
+  background: linear-gradient(90deg, #e3eafc 0%, #b8c6e7 100%);
+  color: #4a6fa5;
+  transform: scale(1.04);
+  box-shadow: 0 4px 16px rgba(74,111,165,0.13);
+}
+
+.bookActions button,
+.additionalReadBlock .closeAdditionalBtn {
+  background: linear-gradient(90deg, #e3eafc 0%, #b8c6e7 100%);
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #2d3142;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(120,120,180,0.06);
+  outline: none;
+}
+.bookActions button:hover, .bookActions button:focus,
+.additionalReadBlock .closeAdditionalBtn:hover, .additionalReadBlock .closeAdditionalBtn:focus {
+  background: linear-gradient(90deg, #b8c6e7 0%, #e3eafc 100%);
+  color: #4a6fa5;
+  box-shadow: 0 2px 8px rgba(74,111,165,0.13);
+}
+
+#statsNav {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 18px;
+  background: #e3eafc;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(100,100,150,0.06);
+  width: 100%;
+  max-width: 370px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.statsTab {
+  flex: 1 1 0;
+  padding: 13px 0;
+  border: none;
+  background: none;
+  color: #4a6fa5;
+  font-weight: 600;
+  font-size: 1.08rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  border-right: 1px solid #e3e7ef;
+  outline: none;
+  letter-spacing: 0.2px;
+}
+.statsTab:last-child {
+  border-right: none;
+}
+.statsTab.active {
+  background: linear-gradient(90deg, #e3eafc 0%, #b8c6e7 100%);
+  color: #22304a;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(180,180,200,0.10);
+  border-bottom: 2.5px solid #4a6fa5;
+  z-index: 1;
+}
+.statsTab:hover:not(.active), .statsTab:focus:not(.active) {
+  background: #f3f3fa;
+  color: #22304a;
+}
+#statsSectionHeading {
+  margin: 0;
+  font-size: 1.18rem;
+  font-weight: 700;
+  text-align: center;
+  color: #22304a;
+  margin-top: 8px;
+  margin-bottom: 2px;
+  letter-spacing: 0.2px;
+}
+#statsSectionSubheading {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  color: #4a6fa5;
+  text-align: center;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+}
+#statsContent {
+  margin-top: 0;
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+@media (max-width: 900px) {
+  #bookList { grid-template-columns: repeat(3, 1fr);}
+}
+@media (max-width: 600px) {
+  #bookList { grid-template-columns: repeat(2, 1fr);}
+  .bookInfo { max-width: 100%; margin-bottom: 12px;}
+  #formPopup, #statsPopup, #bookDetailPopup { max-width: 98vw; }
+  #statsContent { min-height: 260px; }
+}
+
+#bookList {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 28px;
+  margin: 48px auto 120px;
+  max-width: 1200px;
+  padding: 0 24px;
+  min-height: 220px;
+  align-items: center;
+  justify-items: center;
+}
+#bookList .emptyMessage {
+  grid-column: 1 / -1;
+  justify-self: center;
+  align-self: center;
+  text-align: center;
+  color: #7ea1e7;
+  font-style: italic;
+  font-size: 1.2rem;
+}
+.bookGridBtn {
+  background: #fafdff;
+  border: 2px solid #e3eafc;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(74,111,165,0.08);
+  padding: 16px 10px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s, border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 180px;
+  min-width: 0;
+  text-align: center;
+  font-size: 1rem;
+  gap: 10px;
+  outline: none;
+}
+.bookGridBtn:hover, .bookGridBtn:focus {
+  transform: scale(0.97);
+  box-shadow: 0 2px 12px rgba(74,111,165,0.16);
+  border-color: #4a6fa5;
+}
+.bookGridPic {
+  width: 80px;
+  height: 100px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bookGridPic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #e3eafc;
+}
+.noPic {
+  width: 80px;
+  height: 100px;
+  background: #e3eafc;
+  border-radius: 10px;
+}
+.bookGridInfo {
+  font-size: 0.97rem;
+  color: #2d3142;
+  word-break: break-word;
+}
+#bookDetailPopup .closeBtn {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: transparent;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: #7ea1e7;
+  font-weight: 700;
+  outline: none;
+}
+#bookDetailPopup .closeBtn:hover, #bookDetailPopup .closeBtn:focus {
+  color: #4a6fa5;
+}
+
+#bookDetailPopup {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  min-width: 340px;
+  max-width: 600px;
+  padding: 0;
+  color: #22304a;
+  background: #fafdff;
+}
+#bookDetailPopupContentWrapper {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-height: 320px;
+}
+#bookDetailPicPanel {
+  background: #e3eafc;
+  border-radius: 18px 0 0 18px;
+  min-width: 160px;
+  max-width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 12px;
+}
+#bookDetailPicPanel img {
+  width: 100%;
+  max-width: 120px;
+  max-height: 180px;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(74,111,165,0.10);
+  background: #fff;
+  object-fit: cover;
+}
+#bookDetailPanel {
+  flex: 1;
+  padding: 24px 24px 24px 18px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+#bookDetailNav {
+  display: flex;
+  gap: 0;
+  margin-bottom: 16px;
+  background: #e3eafc;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(100,100,150,0.04);
+  width: 100%;
+  max-width: 340px;
+}
+.bookDetailTab {
+  flex: 1 1 0;
+  padding: 10px 0;
+  border: none;
+  background: none;
+  color: #4a6fa5;
+  font-weight: 600;
+  font-size: 1.02rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  border-right: 1px solid #e3eafc;
+  outline: none;
+  letter-spacing: 0.2px;
+}
+.bookDetailTab:last-child {
+  border-right: none;
+}
+.bookDetailTab.active {
+  background: linear-gradient(90deg, #e3eafc 0%, #b8c6e7 100%);
+  color: #22304a;
+  font-weight: 700;
+  border-bottom: 2.5px solid #4a6fa5;
+  z-index: 1;
+}
+.bookDetailTab:hover:not(.active), .bookDetailTab:focus:not(.active) {
+  background: #f3f3fa;
+  color: #22304a;
+}
+#bookDetailHeading {
+  margin: 0 0 10px 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #22304a;
+  letter-spacing: 0.2px;
+  text-align: left;
+  word-break: break-word;
+}
+.bookDetailSection {
+  display: none;
+  animation: fadeInUp 0.3s;
+}
+.bookDetailSection.active {
+  display: block;
+}
+.bookDetailInfoList, .bookDetailRatingsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.bookDetailInfoList li, .bookDetailRatingsList li {
+  margin-bottom: 8px;
+  font-size: 1rem;
+  color: #2d3142;
+}
+.bookDetailInfoList strong, .bookDetailRatingsList strong {
+  color: #4a6fa5;
+  font-weight: 600;
+}
+.bookDetailQuote {
+  font-style: italic;
+  color: #4a6fa5;
+  margin-bottom: 12px;
+  margin-top: 4px;
+  font-size: 1.05rem;
+  padding-left: 8px;
+  border-left: 3px solid #b8c6e7;
+}
+@media (max-width: 700px) {
+  #bookDetailPopup, #bookDetailPopupContentWrapper {
+    flex-direction: column;
+    min-width: 0;
+    max-width: 98vw;
+  }
+  #bookDetailPicPanel {
+    border-radius: 18px 18px 0 0;
+    min-width: 0;
+    max-width: 100vw;
+    justify-content: flex-start;
+    padding: 18px 0 0 0;
+  }
+  #bookDetailPanel {
+    padding: 18px 12px 18px 12px;
+  }
+}
+
+.icon-rating {
+  font-size: 1.15em;
+  vertical-align: middle;
+}
+.star-filled { color: #54f0fc; }
+.star-empty { color: #e3eafc; }
+.tear-filled { color: #4a90e2; }
+.tear-empty { color: #e3eafc; }
+.spice-filled { color: #ff7043; }
+.spice-empty { color: #e3eafc; }
+.star-half { color: #54f0fc; }
+.tear-half { color: #4a90e2; opacity: 0.6; }
+.spice-half { color: #ff7043; opacity: 0.6; }
+
+.bookDetailRatingsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 24px;
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+.bookDetailRatingsGrid .grid-rating-label {
+  font-weight: 600;
+  color: #4a6fa5;
+  font-size: 1rem;
+  margin-bottom: 2px;
+}
+.bookDetailRatingsGrid .grid-rating-value {
+  color: #2d3142;
+  font-size: 1rem;
+}
+
+/* --- DARK MODE --- */
+/* Replace your dark mode CSS section with the following for a clean, flat, black-based dark mode: */
+
+body.dark-mode {
+  background: #111214;
+  color: #fff;
+}
+body.dark-mode .main-header {
+  background: #18191b;
+  border-bottom: 2px solid #232325;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+}
+body.dark-mode .main-header h1 { color: #fff; }
+body.dark-mode #darkModeToggle { color: #fff; }
+body.dark-mode #formPopup,
+body.dark-mode #statsPopup,
+body.dark-mode #bookDetailPopup {
+  background: #3a3c3f;
+  border-color: #707077;
+  color: #fff;
+}
+body.dark-mode #formPopup label,
+body.dark-mode #formPopup h2,
+body.dark-mode #statsPopup h2,
+body.dark-mode #statsSectionHeading,
+body.dark-mode #bookDetailHeading,
+body.dark-mode #statsSectionSubheading {
+  color: #fff;
+}
+body.dark-mode #formPopup input,
+body.dark-mode #formPopup textarea,
+body.dark-mode #formPopup select {
+  background: #111214;
+  color: #fff;
+  border-color: #232325;
+}
+body.dark-mode #formPopup input:focus,
+body.dark-mode #formPopup textarea:focus,
+body.dark-mode #formPopup select:focus {
+  border-color: #fff;
+}
+body.dark-mode .floating-btn,
+body.dark-mode #addBtn,
+body.dark-mode #statsBtn {
+  background: #232325;
+  color: #fff;
+}
+
+body.dark-mode #formPopup button.submitBtn {
+  background: #232325 !important;
+  color: #fff !important;
+  border: 1.5px solid #44464a !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+}
+
+body.dark-mode #formPopup button.submitBtn:hover,
+body.dark-mode #formPopup button.submitBtn:focus {
+  background: #333436 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+body.dark-mode #addBtn:hover, body.dark-mode #addBtn:focus,
+body.dark-mode #statsBtn:hover, body.dark-mode #statsBtn:focus {
+  background: #333436;
+}
+body.dark-mode #bookList .emptyMessage { color: #b8c6e7; }
+body.dark-mode .bookGridBtn {
+  background: #18191b;
+  border-color: #232325;
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+}
+body.dark-mode .bookGridBtn:hover, body.dark-mode .bookGridBtn:focus {
+  border-color: #fff;
+  background: #232325;
+  color: #fff;
+}
+body.dark-mode .bookGridInfo {
+  color: #fff;
+}
+body.dark-mode .bookGridPic img, body.dark-mode .noPic {
+  background: #232325;
+}
+body.dark-mode .bookActions button,
+body.dark-mode .additionalReadBlock .closeAdditionalBtn {
+  background: #232325;
+  color: #fff;
+}
+body.dark-mode .bookActions button:hover, body.dark-mode .bookActions button:focus,
+body.dark-mode .additionalReadBlock .closeAdditionalBtn:hover, body.dark-mode .additionalReadBlock .closeAdditionalBtn:focus {
+  background: #333436;
+  color: #fff;
+}
+body.dark-mode #bookDetailPicPanel {
+  background: #232325;
+}
+body.dark-mode #bookDetailNav,
+body.dark-mode #statsNav {
+  background: #232325;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+}
+body.dark-mode .bookDetailTab,
+body.dark-mode .statsTab {
+  color: #b8c6e7;
+  background: none;
+}
+body.dark-mode .bookDetailTab.active,
+body.dark-mode .statsTab.active {
+  background: #18191b;
+  color: #fff;
+  border-bottom: 2.5px solid #fff;
+}
+body.dark-mode .bookDetailTab:hover:not(.active),
+body.dark-mode .bookDetailTab:focus:not(.active),
+body.dark-mode .statsTab:hover:not(.active),
+body.dark-mode .statsTab:focus:not(.active) {
+  background: #232325;
+  color: #fff;
+}
+body.dark-mode .bookDetailInfoList strong,
+body.dark-mode .bookDetailRatingsList strong,
+body.dark-mode .grid-rating-label {
+  color: #fff;
+}
+body.dark-mode .bookDetailQuote {
+  color: #fff;
+  border-left: 3px solid #fff;
+}
+body.dark-mode #addMoreReadsBtn {
+  background: #232325;
+  color: #fff;
+}
+body.dark-mode #addMoreReadsBtn:hover, body.dark-mode #addMoreReadsBtn:focus {
+  background: #333436;
+  color: #fff;
+}
+body.dark-mode #formPopup button.closeBtn,
+body.dark-mode #statsPopup button.closeBtn,
+body.dark-mode #bookDetailPopup .closeBtn {
+  color: #fff;
+}
+body.dark-mode #formPopup button.closeBtn:hover,
+body.dark-mode #statsPopup button.closeBtn:hover,
+body.dark-mode #bookDetailPopup .closeBtn:hover,
+body.dark-mode #formPopup button.closeBtn:focus,
+body.dark-mode #statsPopup button.closeBtn:focus,
+body.dark-mode #bookDetailPopup .closeBtn:focus {
+  color: #b8c6e7;
+}
+body.dark-mode .star-empty,
+body.dark-mode .tear-empty,
+body.dark-mode .spice-empty {
+  color: #44464a;
+}
+body.dark-mode .bookDetailRatingsGrid .grid-rating-value {
+  color: #fff;
+}
+body.dark-mode .bookDetailInfoList li,
+body.dark-mode .bookDetailRatingsList li {
+  color: #fff;
+}
+body.dark-mode .icon-rating {
+  color: #fff;
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js" defer></script>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <title>Book Log</title>
+
+</head>
+<body>
+
+  <header class="main-header" style="position:relative;">
+  <h1>My Book Log</h1>
+  <button id="darkModeToggle" title="Toggle dark mode" style="position:absolute;top:18px;right:28px;background:transparent;border:none;cursor:pointer;font-size:1.5rem;color:#fff;transition:color 0.2s;">
+    <i class="fa-solid fa-moon"></i>
+  </button>
+</header>
+
+  <div id="bookList"></div>
+
+  <div id="buttonsContainer">
+    <button id="addBtn" class="floating-btn" title="Add Book">+</button>
+    <button id="statsBtn" class="floating-btn" title="View Dashboard">
+  <i class="fa-solid fa-chart-pie"></i>
+</button>
+  </div>
+
+  <div id="formPopup" aria-hidden="true" role="dialog" aria-labelledby="formTitle">
+    <button class="closeBtn" aria-label="Close Form">&times;</button>
+    <h2 id="formTitle">Add New Book</h2>
+    <form id="bookForm">
+
+      <label for="bookPicture">Book Picture</label>
+      <input type="file" id="bookPicture" accept="image/*" />
+      <img id="bookPicPreview" alt="Book Picture Preview" style="display:none; width:100%; margin-top:10px; border-radius:8px;" />
+
+      <label for="bookName">Book Name *</label>
+      <input type="text" id="bookName" name="bookName" required />
+
+      <label for="authorName">Author *</label>
+      <input type="text" id="authorName" name="authorName" required />
+
+      <label for="genre">Genre *</label>
+      <input type="text" id="genre" name="genre" required />
+
+      <label>Book Type *</label>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;" required>
+        <label><input type="radio" name="bookType" value="Physical" /> Physical</label>
+        <label><input type="radio" name="bookType" value="Audio" /> Audio Book</label>
+        <label><input type="radio" name="bookType" value="Ebook" /> E-book</label>
+      </div>
+
+      <label for="pages">Number of Pages *</label>
+      <input type="number" id="pages" name="pages" min="1" required />
+
+      <label for="startDate">Start Date *</label>
+      <input type="date" id="startDate" name="startDate" required />
+
+      <label for="endDate">End Date *</label>
+      <input type="date" id="endDate" name="endDate" required />
+
+      <label for="favoriteQuote">Favorite Quote</label>
+      <textarea id="favoriteQuote" name="favoriteQuote"></textarea>
+
+      <label for="favoriteCharacter">Favorite Side Character</label>
+      <input type="text" id="favoriteCharacter" name="favoriteCharacter" />
+
+      <label for="favoriteScene">Favorite Scene</label>
+      <textarea id="favoriteScene" name="favoriteScene"></textarea>
+
+      <label for="writingQuality">Writing Quality (1-10)</label>
+      <input type="number" id="writingQuality" name="writingQuality" min="1" max="10" step="0.1" />
+
+      <label for="characterRating">Character Rating (1-10)</label>
+      <input type="number" id="characterRating" name="characterRating" min="1" max="10" step="0.1"/>
+
+      <label for="plotRating">Plot Development (1-10)</label>
+      <input type="number" id="plotRating" name="plotRating" min="1" max="10" step="0.1"/>
+
+      <label for="endingRating">Ending Rating (1-10)</label>
+      <input type="number" id="endingRating" name="endingRating" min="1" max="10" step="0.1" />
+
+      <label for="overallRating">Overall Rating (1-5) *</label>
+      <input type="number" id="overallRating" name="overallRating" min="1" max="5" step="0.1" required />
+
+      <label for="tearRating">Tear Rating (1-5)</label>
+      <input type="number" id="tearRating" name="tearRating" min="1" max="5" step="0.1" />
+
+      <label for="spiceRating">Spice Rating (1-5)</label>
+      <input type="number" id="spiceRating" name="spiceRating" min="1" max="5" step="0.1" />
+
+      <label for="finalThoughts">Final Thoughts</label>
+      <textarea id="finalThoughts" name="finalThoughts"></textarea>
+
+      <label style="display: flex; align-items: center;"> Would I Recommend?
+        <input type="checkbox" id="wouldRecommend" name="wouldRecommend" /> 
+      </label>
+
+      <label>Additional Reads</label>
+      <div id="additionalReadsContainer">
+        <button type="button" id="addMoreReadsBtn" style="margin-top:8px;">+ Add More Reads</button>
+      </div>
+
+      <button type="submit" class="submitBtn">Add Book</button>
+    </form>
+  </div>
+
+  <div id="statsPopup" aria-hidden="true" role="dialog" aria-labelledby="statsTitle">
+  <button class="closeBtn" aria-label="Close Stats">&times;</button>
+  <h2 id="statsTitle">Reading Statistics</h2>
+  <div class="statsSubheading">Analyse your reading habits and preferences</div>
+  <div id="statsNav">
+    <button class="statsTab active" data-tab="author">Authors</button>
+    <button class="statsTab" data-tab="genre">Genres</button>
+    <button class="statsTab" data-tab="monthly">Monthly Activity</button>
+  </div>
+  <div id="statsContent">
+  </div>
+</div>
+
+  <div id="bookDetailPopup" aria-hidden="true" role="dialog">
+  <button class="closeBtn" aria-label="Close Details">&times;</button>
+  <div id="bookDetailPopupContentWrapper">
+    <div id="bookDetailPicPanel"></div>
+    <div id="bookDetailPanel">
+      <div id="bookDetailHeading"></div>
+      <div id="bookDetailNav">
+        <button class="bookDetailTab active" data-tab="info">Info</button>
+        <button class="bookDetailTab" data-tab="details">Details</button>
+        <button class="bookDetailTab" data-tab="ratings">Ratings</button>
+      </div>
+      <div id="bookDetailInfo" class="bookDetailSection active"></div>
+      <div id="bookDetailDetails" class="bookDetailSection"></div>
+      <div id="bookDetailRatings" class="bookDetailSection"></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
